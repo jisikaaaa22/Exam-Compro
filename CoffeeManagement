@@ -1,0 +1,95 @@
+// CoffeeManagementProgram.java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CoffeeManagementProgram extends JFrame {
+    private List<Coffee> coffeeList = new ArrayList<>();
+    private DefaultListModel<String> listModel;
+    private JList<String> coffeeJList;
+    private JTextField nameField, typeField, priceField, searchField;
+
+    public CoffeeManagementProgram() {
+        setTitle("Coffee Management Program");
+        setSize(400, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Create UI components
+        listModel = new DefaultListModel<>();
+        coffeeJList = new JList<>(listModel);
+        JScrollPane scrollPane = new JScrollPane(coffeeJList);
+
+        // Styling the JList
+        coffeeJList.setFont(new Font("Arial", Font.PLAIN, 14));
+        coffeeJList.setBackground(Color.LIGHT_GRAY);
+        coffeeJList.setForeground(Color.BLACK);
+
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
+        nameField = new JTextField();
+        typeField = new JTextField();
+        priceField = new JTextField();
+        searchField = new JTextField();
+
+        // Styling input fields
+        nameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        typeField.setFont(new Font("Arial", Font.PLAIN, 14));
+        priceField.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchField.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        inputPanel.add(new JLabel("Name:"));
+        inputPanel.add(nameField);
+        inputPanel.add(new JLabel("Type:"));
+        inputPanel.add(typeField);
+        inputPanel.add(new JLabel("Price:"));
+        inputPanel.add(priceField);
+        inputPanel.add(new JLabel("Search:"));
+        inputPanel.add(searchField);
+
+        JButton addButton = new JButton("Add Coffee");
+        JButton updateButton = new JButton("Update Coffee");
+        JButton deleteButton = new JButton("Delete Coffee");
+        JButton saveButton = new JButton("Save to CSV");
+
+        // Styling buttons
+        addButton.setFont(new Font("Arial", Font.BOLD, 14));
+        updateButton.setFont(new Font("Arial", Font.BOLD, 14));
+        deleteButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        addButton.addActionListener(e -> addCoffee());
+        updateButton.addActionListener(e -> updateCoffee());
+        deleteButton.addActionListener(e -> deleteCoffee());
+        saveButton.addActionListener(e -> saveToCSV());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(addButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(saveButton);
+
+        searchField.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                searchCoffee();
+            }
+        });
+
+        add(scrollPane, BorderLayout.CENTER);
+        add(inputPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void addCoffee() {
+        String name = nameField.getText();
+        String type = typeField.getText();
+        double price;
+        try {
+            price = Double.parseDouble(priceField.getText());
+            Coffee coffee = new Coffee(name, type, price);
+            coffeeList.add(coffee);
+            listModel.addElement(coffee.getName());
+            clearFields();
+        } catch (NumberFormat
