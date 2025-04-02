@@ -1,0 +1,42 @@
+package com.example.coffee;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+public class HomeController {
+
+    private final List<Coffee> coffeeList = new ArrayList<>();
+
+    public HomeController() {
+        // Sample coffee data
+        coffeeList.add(new Coffee(1, "Espresso", "Arabica", "Small", 3.5));
+        coffeeList.add(new Coffee(2, "Latte", "Arabica", "Medium", 4.0));
+    }
+
+    @GetMapping("/")
+    public String showCoffees(Model model) {
+        model.addAttribute("coffees", coffeeList);
+        return "index";
+    }
+
+    @PostMapping("/add")
+    public String addCoffee(@RequestParam String name, 
+                            @RequestParam String type, 
+                            @RequestParam String size, 
+                            @RequestParam double price) {
+        int id = coffeeList.size() + 1;
+        coffeeList.add(new Coffee(id, name, type, size, price));
+        return "redirect:/";
+    }
+
+    @PostMapping("/delete")
+    public String deleteCoffee(@RequestParam int id) {
+        coffeeList.removeIf(c -> c.getId() == id);
+        return "redirect:/";
+    }
+}
